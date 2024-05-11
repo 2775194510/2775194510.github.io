@@ -12,13 +12,13 @@ tags:
 
 ##  1. 使用Spring框架的好处是什么？
 
-- **轻量：**Spring 是轻量的，基本的版本大约2MB
-- **控制反转：**Spring通过控制反转实现了松散耦合，对象们给出它们的依赖，而不是创建或查找依赖的对象们
-- **面向切面的编程(AOP)：**Spring支持面向切面的编程，并且把应用业务逻辑和系统服务分开
-- **容器：**Spring 包含并管理应用中对象的生命周期和配置
-- **MVC框架：**Spring的WEB框架是个精心设计的框架，是Web框架的一个很好的替代品
-- **事务管理：**Spring 提供一个持续的事务管理接口，可以扩展到上至本地事务下至全局事务（JTA）
-- **异常处理：**Spring 提供方便的API把具体技术相关的异常（比如由JDBC，Hibernate or JDO抛出的）转化为一致的unchecked 异常。
+- **轻量：** Spring 是轻量的，基本的版本大约2MB
+- **控制反转：** Spring通过控制反转实现了松散耦合，对象们给出它们的依赖，而不是创建或查找依赖的对象们
+- **面向切面的编程(AOP)：** Spring支持面向切面的编程，并且把应用业务逻辑和系统服务分开
+- **容器：** Spring 包含并管理应用中对象的生命周期和配置
+- **MVC框架：** Spring的WEB框架是个精心设计的框架，是Web框架的一个很好的替代品
+- **事务管理：** Spring 提供一个持续的事务管理接口，可以扩展到上至本地事务下至全局事务（JTA）
+- **异常处理：** Spring 提供方便的API把具体技术相关的异常（比如由JDBC，Hibernate or JDO抛出的）转化为一致的unchecked 异常。
 
 ## 2. 什么是 Spring IOC 容器？
 
@@ -155,24 +155,23 @@ Bean的生命周期是由容器来管理的。主要在创建和销毁两个时�
 
 ### 创建过程：
 
-1，实例化bean对象，以及设置bean属性； 
-2，如果通过Aware接口声明了依赖关系，则会注入Bean对容器基础设施层面的依赖，Aware接口是为了感知到自身的一些属性。容器管理的Bean一般不需要知道容器的状态和直接使用容器。但是在某些情况下是需要在Bean中对IOC容器进行操作的。这时候需要在bean中设置对容器的感知。SpringIOC容器也提供了该功能，它是通过特定的Aware接口来完成的。 
-比如BeanNameAware接口，可以知道自己在容器中的名字。 
+- 1，实例化bean对象，以及设置bean属性；   
+- 2，如果通过Aware接口声明了依赖关系，则会注入Bean对容器基础设施层面的依赖，Aware接口是为了感知到自身的一些属性。容器管理的Bean一般不需要知道容器的状态和直接使用容器。但是在某些情况下是需要在Bean中对IOC容器进行操作的。这时候需要在bean中设置对容器的感知。SpringIOC容器也提供了该功能，它是通过特定的Aware接口来完成的。 比如BeanNameAware接口，可以知道自己在容器中的名字。 
 如果这个Bean已经实现了BeanFactoryAware接口，可以用这个方式来获取其它Bean。 
 （如果Bean实现了BeanNameAware接口，调用setBeanName()方法，传入Bean的名字。 
 如果Bean实现了BeanClassLoaderAware接口，调用setBeanClassLoader()方法，传入ClassLoader对象的实例。 
-如果Bean实现了BeanFactoryAware接口，调用setBeanFactory()方法，传入BeanFactory对象的实例。） 
-3，紧接着会调用BeanPostProcess的前置初始化方法postProcessBeforeInitialization，主要作用是在Spring完成实例化之后，初始化之前，对Spring容器实例化的Bean添加自定义的处理逻辑。有点类似于AOP。 
-4，如果实现了BeanFactoryPostProcessor接口的afterPropertiesSet方法，做一些属性被设定后的自定义的事情。 
-5，调用Bean自身定义的init方法，去做一些初始化相关的工作。 
-6，调用BeanPostProcess的后置初始化方法，postProcessAfterInitialization去做一些bean初始化之后的自定义工作。 
-7，完成以上创建之后就可以在应用里使用这个Bean了。
+如果Bean实现了BeanFactoryAware接口，调用setBeanFactory()方法，传入BeanFactory对象的实例。）   
+- 3，紧接着会调用BeanPostProcess的前置初始化方法postProcessBeforeInitialization，主要作用是在Spring完成实例化之后，初始化之前，对Spring容器实例化的Bean添加自定义的处理逻辑。有点类似于AOP。   
+- 4，如果实现了BeanFactoryPostProcessor接口的afterPropertiesSet方法，做一些属性被设定后的自定义的事情。   
+- 5，调用Bean自身定义的init方法，去做一些初始化相关的工作。   
+- 6，调用BeanPostProcess的后置初始化方法，postProcessAfterInitialization去做一些bean初始化之后的自定义工作。   
+- 7，完成以上创建之后就可以在应用里使用这个Bean了。  
 
 ### 销毁过程：
 
 当Bean不再用到，便要销毁 
-1，若实现了DisposableBean接口，则会调用destroy方法； 
-2，若配置了destry-method属性，则会调用其配置的销毁方法；
+- 1，若实现了DisposableBean接口，则会调用destroy方法； 
+- 2，若配置了destry-method属性，则会调用其配置的销毁方法；
 
 ### 总结
 
@@ -244,10 +243,10 @@ Spring 容器能够自动装配 bean。也就是说，可以通过检查 BeanFac
 
 ## 16. Spring 怎么解决循环依赖问题？
 
-spring对循环依赖的处理有三种情况： 
-①构造器的循环依赖：这种依赖spring是处理不了的，直 接抛出BeanCurrentlylnCreationException异常。 
-②单例模式下的setter循环依赖：通过“三级缓存”处理循环依赖。 
-③非单例循环依赖：无法处理。
+spring对循环依赖的处理有三种情况：   
+- **①构造器的循环依赖**：这种依赖spring是处理不了的，直 接抛出BeanCurrentlylnCreationException异常。 
+- **②单例模式下的setter循环依赖**：通过“三级缓存”处理循环依赖。 
+- **③非单例循环依赖**：无法处理。
 
 下面分析单例模式下的setter循环依赖如何解决
 

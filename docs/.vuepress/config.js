@@ -180,6 +180,8 @@ module.exports = {
                   collapsable: false,
                   children: [
                     'rabbitmq/1：RabbitMq',
+                    'rabbitmq/2：Rabbitmq常见问题解决方案',
+
                   ]
                 },
                 {

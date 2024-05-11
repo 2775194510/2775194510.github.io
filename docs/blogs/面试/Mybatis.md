@@ -172,11 +172,43 @@ Mybatis提供了9种动态sql标签：trim、where、set、foreach、if、choose
 
 ## 17. Mybatis的一级、二级缓存
 
-1、 一级缓存：基于PerpetualCache的HashMap本地缓存，其存储作用域为Session，当Session flush或close之后，该Session中的所有Cache就将清空，默认打开一级缓存。
-2、 二级缓存与一级缓存机制相同，默认也是采用PerpetualCache，HashMap存储，不同在于其存储作用域为Mapper（namespace），并且可自定义存储源，如Ehcache。默认打不开二级缓存，要开启二级缓存，使用二级缓存属性类需要实现Serializable序列化接口（可用来保存对象的状态），可在它的映射文件中配置。
+MyBatis 提供了 **一级缓存** 和 **二级缓存** 机制，用于优化数据库查询性能，减少不必要的数据库访问。以下是关于 MyBatis 的一级缓存和二级缓存的详细解释：
 
-对于缓存数据更新机制，当某一个作用域（一级缓存Session/二级缓存Namespace）进行了增/删/改操作后，默认该作用域下所有select中的缓存将被clear。
+> 一级缓存（**SqlSession级别的缓存**）
 
+**概述：**
+
+- 一级缓存是 MyBatis 中默认的 **缓存机制**，也称为 `SqlSession 级别`的缓存。
+- 它是在 `SqlSession` 的生命周期内有效的，即每个 SqlSession 都有一个独立的一级缓存。
+- 当在同一个 SqlSession 中执行相同的 SQL 语句时，MyBatis 会**先从一级缓存中查找结果，如果找到则直接返回，否则查询数据库。**
+
+**工作原理：**
+
+- MyBatis 使用了一个基于 `HashMap` 的结构来存储一级缓存中的数据。
+- 缓存的 `key` 是 **SQL 语句** 以及 **该语句所使用的参数**，缓存的 `value` 是查询到的 **结果集**。
+- 当执行 **查询** 语句时，`MyBatis` 会先在缓存中查找是否存在相同的 key，如果存在，则直接返回缓存中的 value，否则再去执行 SQL 语句。
+- 当执行**修改或删除** 操作时，MyBatis 会自动清空该 SqlSession 对象的一级缓存，以避免数据不一致的问题。
+
+> 二级缓存（Mapper级别的缓存）
+
+
+**概述**：
+
+- 二级缓存是基于 `Mapper` 文件的 `namespace` 的，**多个 SqlSession 可以共享同一个 Mapper 中的二级缓存区域。**
+- 如果两个 `Mapper` 的 `namespace` 相同，那么这两个 Mapper 中执行 SQL 查询到的数据也将存在相同的二级缓存区域中。
+- 二级缓存的生命周期是整个应用，而不是单个 SqlSession。
+
+**工作原理：**
+
+- 二级缓存与一级缓存的工作原理类似，但在作用范围和生命周期上有所不同。
+- 当执行查询语句时，MyBatis 会先在二级缓存中查找是否存在相同的 key，如果存在，则直接返回缓存中的 value，否则再去查询数据库，并将结果存储在二级缓存中。
+- 二级缓存的 key 也是由 SQL 语句和参数组成，但与一级缓存不同的是，它还包含了 Mapper 的 namespace。
+- 由于二级缓存的生命周期是整个应用，因此必须限制二级缓存的容量，以避免内存溢出。MyBatis 提供了溢出淘汰机制来处理这个问题。
+
+> **注意事项：**
+
+- 在使用二级缓存时，需要确保所有**对数据的修改操作（包括增、删、改）都能及时地更新到缓存中**，以避免数据不一致的问题。这通常需要在 Mapper 文件中配置相应的缓存刷新策略。
+- 另外，由于二级缓存是基于 `Mapper` 的 `namespace` 的，因此在使用二级缓存时需要注意 Mapper 的命名和 namespace 的配置。如果 Mapper 的命名或 namespace 配置不当，可能会导致缓存数据混乱或失效。
 ## 18. 使用MyBatis的Mapper接口调用时有哪些要求？
 
 1、Mapper接口方法名和mapper.xml中定义的每个sql的id相同；
